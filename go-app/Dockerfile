@@ -1,8 +1,13 @@
-FROM golang:1.16 as base
+# go-app/Dockerfile
+FROM golang:1.23-alpine
 
-FROM base as dev
+WORKDIR /app
 
-RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
+COPY . .
 
-WORKDIR /opt/app/api
-CMD ["air"]
+# Download necessary Go modules
+RUN go mod tidy
+
+RUN go build -o main .
+
+CMD ["./main"]
